@@ -1,0 +1,100 @@
+package com.tracker;
+import java.util.ArrayList;
+import java.util.Scanner;
+class FuelEntry {
+    private double distance;
+    private double fuel;
+
+    public FuelEntry(double distance, double fuel) {
+        this.distance = distance;
+        this.fuel = fuel;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public double getFuel() {
+        return fuel;
+    }
+
+    public double getMileage() {
+        return distance / fuel;
+    }
+
+    @Override
+    public String toString() {
+        return "Distance: " + String.format("%.2f", distance) + " km\n"
+             + "Fuel: " + String.format("%.2f", fuel) + " L\n"
+             + "Mileage: " + String.format("%.2f", getMileage()) + " km/L\n";
+    }
+}
+
+public class Tracker {
+	private static ArrayList<FuelEntry> entries = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+	public static void main(String[] args) {
+		int choice;
+        do {
+            System.out.println("\n--- Vehicle Fuel Mileage Tracker ---");
+            System.out.println("1. Add fuel entry");
+            System.out.println("2. Show all entries");
+            System.out.println("3. Show average mileage");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1 -> addEntry();
+                case 2 -> showEntries();
+                case 3 -> showAverageMileage();
+                case 0 -> System.out.println("\nExiting...");
+                default -> System.out.println("\nInvalid choice.");
+            }
+        } while (choice != 0);
+    }
+
+    private static void addEntry() {
+        System.out.print("\nEnter distance traveled (km): ");
+        double distance = scanner.nextDouble();
+        System.out.print("Enter fuel consumed (liters): ");
+        double fuel = scanner.nextDouble();
+
+        if (fuel <= 0 || distance < 0) {
+            System.out.println("\nInvalid input. Distance and fuel must be positive.");
+            return;
+        }
+
+        entries.add(new FuelEntry(distance, fuel));
+        System.out.println("\nEntry added successfully.");
+    }
+
+    private static void showEntries() {
+        if (entries.isEmpty()) {
+            System.out.println("\nNo entries found.");
+            return;
+        }
+
+        System.out.println("\n--- Fuel Entries ---");
+        for (int i = 0; i < entries.size(); i++) {
+            System.out.println((i + 1) + ".\n" + entries.get(i));
+        }
+    }
+
+    private static void showAverageMileage() {
+        if (entries.isEmpty()) {
+            System.out.println("\nNo data to calculate average mileage.");
+            return;
+        }
+
+        double totalDistance = 0, totalFuel = 0;
+        for (FuelEntry entry : entries) {
+            totalDistance += entry.getDistance();
+            totalFuel += entry.getFuel();
+        }
+
+        double averageMileage = totalDistance / totalFuel;
+        System.out.printf("\nAverage Mileage: %.2f km/L\n", averageMileage);
+    }
+}
